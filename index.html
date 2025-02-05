@@ -3,30 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reproductor M3U8</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <title>Reproductor de Video M3U8</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        video {
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
 <body>
-    <h1>Reproductor M3U8</h1>
-    <video id="video" width="1080" height="1080" controls>
-        Tu navegador no soporta la etiqueta de video.
-    </video>
+    <!-- Reproductor de video -->
+    <video id="videoPlayer" controls></video>
 
+    <!-- Incluir la biblioteca hls.js desde un CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <!-- Script para configurar el reproductor -->
     <script>
-        var video = document.getElementById('video');
-        var videoSrc = 'https://copacotf.desdeparaguay.net/telefuturo/telefuturo_py_baja/chunklist_w1680396881.m3u8'
+        // URL del archivo .m3u8 (cámbiala por la URL de tu stream)
+        const videoSrc = 'https://path/to/your/stream.m3u8';
+
+        // Obtener el elemento de video
+        const videoPlayer = document.getElementById('videoPlayer');
+
+        // Verificar si el navegador soporta hls.js
         if (Hls.isSupported()) {
-            var hls = new Hls();
-            hls.loadSource(videoSrc);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                console.log('Manifest loaded, starting playback.');
+            const hls = new Hls(); // Crear una instancia de hls.js
+            hls.loadSource(videoSrc); // Cargar la URL del stream
+            hls.attachMedia(videoPlayer); // Asociar el video al reproductor
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                videoPlayer.play(); // Reproducir automáticamente
             });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            // Si el navegador soporta HLS nativamente (por ejemplo, Safari)
-            video.src = videoSrc;
-        } else {
-            alert('Tu navegador no soporta HLS');
+        } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+            // Si el navegador soporta HLS de forma nativa (como Safari)
+            videoPlayer.src = videoSrc;
+            videoPlayer.addEventListener('loadedmetadata', function() {
+                videoPlayer.play(); // Reproducir automáticamente
+            });
         }
     </script>
 </body>
